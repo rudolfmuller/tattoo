@@ -6,6 +6,7 @@ use termion::{clear, cursor};
 pub struct Surface {
     /// I know `Vec<Vec<T>>` is not good but is simple to code and more readble for me
     pub surface: Vec<Vec<char>>,
+    pub scale: Scale,
 }
 impl Surface {
     /// Create a new surface
@@ -19,6 +20,7 @@ impl Surface {
     pub fn new(fill: char, scale: Scale) -> Surface {
         Surface {
             surface: vec![vec![fill; scale.w]; scale.h],
+            scale,
         }
     }
     /// Draw a other surface on this surface
