@@ -11,10 +11,16 @@ pub mod surface;
 /// assert_eq!(position, Position { x: 5, y: 5 });
 ///
 /// ```
-#[derive(PartialEq, Debug)]
+#[derive(Default, PartialEq, Debug, Clone, Copy)]
 pub struct Position {
     pub x: usize,
     pub y: usize,
+}
+impl Position {
+    /// Return the value as tuple `(x, y)` of type `usize`
+    pub fn to_tuple(&self) -> (usize, usize) {
+        (self.x, self.y)
+    }
 }
 
 /// The `Scale` is a structure composed of variables of type `usize` named `w` and `h`
@@ -26,12 +32,17 @@ pub struct Position {
 /// assert_eq!(scale, Scale { w: 6, h: 7 });
 ///
 /// ```
-#[derive(PartialEq, Debug)]
+#[derive(Default, PartialEq, Debug, Clone, Copy)]
 pub struct Scale {
     pub w: usize,
     pub h: usize,
 }
-
+impl Scale {
+    /// Return the value as tuple `(w, h)` of type `usize`
+    pub fn to_tuple(&self) -> (usize, usize) {
+        (self.w, self.h)
+    }
+}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -41,7 +52,6 @@ mod tests {
     fn it_works() -> std::io::Result<()> {
         // init
         let _cursor_guard = CursorGuard::new()?;
-
         let mut master = Surface::new('.', Scale { w: 20, h: 10 });
         let mut screen = Surface::new(' ', Scale { w: 10, h: 5 });
         draw::label(&mut screen, Position { x: 0, y: 0 }, "Hello");
