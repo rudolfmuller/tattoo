@@ -43,6 +43,24 @@ impl Scale {
         (self.w, self.h)
     }
 }
+
+/// The `Border` structure is used to specify the border style for `border_layout`
+#[derive(PartialEq, Debug, Clone, Copy)]
+pub struct Border {
+    /// top-left
+    pub tl: char,
+    /// top-right
+    pub tr: char,
+    /// bottom-left
+    pub bl: char,
+    /// bottom-right
+    pub br: char,
+    /// horizontal
+    pub h: char,
+    /// vertical
+    pub v: char,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -52,10 +70,27 @@ mod tests {
     fn it_works() -> std::io::Result<()> {
         // init
         let _cursor_guard = CursorGuard::new()?;
-        let mut master = Surface::new('.', Scale { w: 20, h: 10 });
-        let mut screen = Surface::new(' ', Scale { w: 10, h: 5 });
-        draw::label(&mut screen, Position { x: 0, y: 0 }, "Hello");
-        master.blit(&screen, Position { x: 10, y: 5 });
+        let mut master = Surface::new('.', Scale { w: 30, h: 10 });
+        let mut window = Surface::new(' ', Scale { w: 23, h: 5 });
+        draw::border_layout(
+            &mut window,
+            Border {
+                tl: '╭',
+                tr: '╮',
+                bl: '└',
+                br: '┘',
+                h: '─',
+                v: '│',
+            },
+        );
+        draw::label(&mut window, Position { x: 1, y: 0 }, "Question");
+        draw::label(
+            &mut window,
+            Position { x: 1, y: 1 },
+            "Do you want a tattoo?",
+        );
+
+        master.blit(&window, Position { x: 5, y: 2 });
         for _ in 0..20 {
             master.flip()?;
             std::thread::sleep(std::time::Duration::from_millis(42));
