@@ -1,5 +1,5 @@
 use crate::Position;
-use crate::surface::{self, Surface};
+use crate::surface::Surface;
 
 fn is_valid_range(surface: &mut Surface, x: usize, y: usize) -> bool {
     y < surface.surface.len() && x < surface.surface[y].len()
@@ -32,6 +32,6 @@ pub fn set(surface: &mut Surface, position: Position, c: char) {
     let y = position.y;
 
     if is_valid_range(surface, x, y) {
-        surface.surface[x][y] = c;
+        surface.surface[y][x] = c;
     }
 }
