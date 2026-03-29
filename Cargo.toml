@@ -8,7 +8,7 @@ description = "Low-level Rust TUI/CUI library"
 repository = "https://github.com/rudolfmuller/tattoo.git"
 readme = "README.md"
 keywords = ["tui", "cui", "terminal", "rust"]
-categories = ["command-line-utilities", "terminal"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 termion = "4.0.6"
