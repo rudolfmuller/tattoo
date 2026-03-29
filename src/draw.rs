@@ -1,5 +1,5 @@
 use crate::Position;
-use crate::surface::Surface;
+use crate::surface::{self, Surface};
 
 fn is_valid_range(surface: &mut Surface, x: usize, y: usize) -> bool {
     y < surface.surface.len() && x < surface.surface[y].len()
@@ -24,5 +24,14 @@ pub fn label(surface: &mut Surface, position: Position, msg: &str) {
             surface.surface[y][x] = c;
         }
         x += 1;
+    }
+}
+/// `set` Write single `char` on surface
+pub fn set(surface: &mut Surface, position: Position, c: char) {
+    let x = position.x;
+    let y = position.y;
+
+    if is_valid_range(surface, x, y) {
+        surface.surface[x][y] = c;
     }
 }
