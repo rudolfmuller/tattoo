@@ -1,6 +1,6 @@
 pub mod draw;
-pub mod guard;
 pub mod surface;
+pub mod terminal;
 
 /// The `Position` is a structure composed of variables of type `usize` named `x` and `y`
 /// # Example
@@ -64,12 +64,13 @@ pub struct Border {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{guard::CursorGuard, surface::Surface};
+    use crate::{surface::Surface, terminal::Terminal};
 
     #[test]
-    fn it_works() -> std::io::Result<()> {
+    fn it_works() -> anyhow::Result<()> {
         // init
-        let _cursor_guard = CursorGuard::new()?;
+        let mut screen = Terminal::new()?;
+
         let mut master = Surface::new('.', Scale { w: 30, h: 10 });
         let mut window = Surface::new(' ', Scale { w: 23, h: 5 });
         draw::border_layout(
@@ -91,8 +92,8 @@ mod tests {
         );
 
         master.blit(&window, Position { x: 5, y: 2 });
-        for _ in 0..20 {
-            master.flip()?;
+        for _ in 0..100 {
+            master.flip(screen.writer())?;
             std::thread::sleep(std::time::Duration::from_millis(42));
         }
         Ok(())

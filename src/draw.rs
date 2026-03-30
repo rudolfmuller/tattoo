@@ -7,14 +7,20 @@ fn is_valid_range(surface: &mut Surface, x: usize, y: usize) -> bool {
 
 /// `label` Write massage on surface
 /// # Example
-/// ```
+/// ```rust
 /// use tattoo::draw;
+/// use tattoo::terminal::Terminal;
 /// use tattoo::{Scale, Position};
 /// use tattoo::surface::Surface;
 ///
-/// let mut master = Surface::new('.', Scale { w: 20, h: 10 });
-/// draw::label(&mut master, Position { x: 5, y: 5 }, "Hello, world");
-/// master.flip();
+/// fn main() -> anyhow::Result<()> {
+///     let mut screen = Terminal::new()?;
+///     let mut master = Surface::new('.', Scale { w: 20, h: 10 });
+///     draw::label(&mut master, Position { x: 5, y: 5 }, "Hello, world");
+///     master.flip(&mut screen.writer())?;
+///
+///     Ok(())
+/// }
 /// ```
 pub fn label(surface: &mut Surface, position: Position, msg: &str) {
     let mut x = position.x;
@@ -39,22 +45,30 @@ pub fn set(surface: &mut Surface, position: Position, c: char) {
 /// # Example
 /// ```
 /// use tattoo::surface::Surface;
+/// use tattoo::terminal::Terminal;
 /// use tattoo::draw;
-/// use tattoo::{ Scale, Border };
+/// use tattoo::{Scale, Border};
 ///
-/// let mut window = Surface::new(' ', Scale { w: 20, h: 5 });
-/// draw::border_layout(
-///     &mut window,
-///     Border {
-///         tl: '╭',
-///         tr: '╮',
-///         bl: '└',
-///         br: '┘',
-///         h: '─',
-///         v: '│',
-///     },
-/// );
-/// window.flip();
+/// fn main() -> anyhow::Result<()> {
+///     let mut screen = Terminal::new()?;
+///     let mut window = Surface::new(' ', Scale { w: 20, h: 5 });
+///
+///     draw::border_layout(
+///         &mut window,
+///         Border {
+///             tl: '╭',
+///             tr: '╮',
+///             bl: '└',
+///             br: '┘',
+///             h: '─',
+///             v: '│',
+///         },
+///     );
+///
+///     window.flip(&mut screen.writer())?;
+///
+///     Ok(())
+/// }
 /// ```
 pub fn border_layout(surface: &mut Surface, border: Border) {
     let width = surface.scale.w;
