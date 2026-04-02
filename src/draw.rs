@@ -13,11 +13,12 @@ fn is_valid_range(surface: &mut Surface, x: usize, y: usize) -> bool {
 /// use tattoo::{Scale, Position};
 /// use tattoo::surface::Surface;
 ///
-/// fn main() -> anyhow::Result<()> {
-///     let mut screen = Terminal::new()?;
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     let screen = Terminal::new()?;
 ///     let mut master = Surface::new('.', Scale { w: 20, h: 10 });
+///     master.set_terminal(screen);
 ///     draw::label(&mut master, Position { x: 5, y: 5 }, "Hello, world");
-///     master.flip(&mut screen.writer())?;
+///     master.flip()?;
 ///
 ///     Ok(())
 /// }
@@ -45,14 +46,14 @@ pub fn set(surface: &mut Surface, position: Position, c: char) {
 /// # Example
 /// ```
 /// use tattoo::surface::Surface;
-/// use tattoo::terminal::Terminal;
 /// use tattoo::draw;
+/// use tattoo::terminal::Terminal;
 /// use tattoo::{Scale, Border};
 ///
-/// fn main() -> anyhow::Result<()> {
-///     let mut screen = Terminal::new()?;
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     let screen = Terminal::new()?;
 ///     let mut window = Surface::new(' ', Scale { w: 20, h: 5 });
-///
+///     window.set_terminal(screen);
 ///     draw::border_layout(
 ///         &mut window,
 ///         Border {
@@ -65,7 +66,7 @@ pub fn set(surface: &mut Surface, position: Position, c: char) {
 ///         },
 ///     );
 ///
-///     window.flip(&mut screen.writer())?;
+///     window.flip()?;
 ///
 ///     Ok(())
 /// }

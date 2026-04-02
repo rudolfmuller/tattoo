@@ -1,38 +1,47 @@
-use crate::{
-    Position, Scale,
-    terminal::{self, Terminal},
-};
-use std::io::Write;
+use crate::{Position, Scale, terminal::Terminal};
+use std::io::{self, Write};
 use termion::{clear, cursor};
 
-#[derive(PartialEq, Debug)]
+/// Surface error(s)
+#[derive(thiserror::Error, Debug)]
+pub enum SurfaceError {
+    #[error("terminal missing")]
+    TerminalMissing,
+    /// Occurs when there is a problem with `stdout`
+    #[error(transparent)]
+    IoError(#[from] io::Error),
+}
+
 pub struct Surface {
     /// I know `Vec<Vec<T>>` is not good but is simple to code and more readble for me
     pub surface: Vec<Vec<char>>,
+    /// The terminal to which .`flip()` will render
+    pub terminal: Option<Terminal>,
+    /// Scale of surface
     pub scale: Scale,
 }
 impl Surface {
     /// Create a new surface
     /// # Example
     /// ```
-
-    /// use tattoo::terminal::Terminal;
     /// use tattoo::Scale;
+    /// use tattoo::terminal::Terminal;
     /// use tattoo::surface::Surface;
     ///
-    /// fn main() -> anyhow::Result<()> {
-    ///     let mut screen = Terminal::new()?;
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     let screen = Terminal::new()?;
     ///     let mut master = Surface::new(' ', Scale { w: 10, h: 10 });
-    ///     
-    ///     master.flip(&mut screen.writer())?;
+    ///     master.set_terminal(screen);
+    ///     master.flip()?;
     ///
     ///     Ok(())
     /// }    
     /// ```
-    pub fn new(fill: char, scale: Scale) -> Surface {
-        Surface {
+    pub fn new(fill: char, scale: Scale) -> Self {
+        Self {
             surface: vec![vec![fill; scale.w]; scale.h],
             scale,
+            terminal: None,
         }
     }
     /// Draw a other surface on this surface
@@ -40,18 +49,19 @@ impl Surface {
     /// Anchored on top-left
     /// # Example
     /// ```
-    /// use tattoo::terminal::Terminal;
     /// use tattoo::{Position, Scale};
+    /// use tattoo::terminal::Terminal;
     /// use tattoo::surface::Surface;
     ///
-    /// fn main() -> anyhow::Result<()> {
-    ///     let mut screen = Terminal::new()?;
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     let screen = Terminal::new()?;
     ///     let mut master = Surface::new(' ', Scale { w: 10, h: 10 });
+    ///     master.set_terminal(screen);
     ///     let surface = Surface::new('.', Scale { w: 5, h: 5 });
     ///     
     ///     master.blit(&surface, Position { x: 5, y: 5 });
     ///     
-    ///     master.flip(&mut screen.writer())?;
+    ///     master.flip()?;
     ///
     ///     Ok(())
     /// }    
@@ -68,26 +78,35 @@ impl Surface {
             }
         }
     }
+
+    /// Set terminal to which `.flip()` will render
+    pub fn set_terminal(&mut self, terminal: Terminal) {
+        self.terminal = Some(terminal);
+    }
+
     /// Write surface and clear terminal
     /// Example
     /// ```rust
-    /// use anyhow::Context;
     /// use tattoo::Scale;
-    /// use tattoo::surface::Surface;
     /// use tattoo::terminal::Terminal;
+    /// use tattoo::surface::Surface;
     ///
-    /// fn main() -> anyhow::Result<()> {
-    ///     let mut screen = Terminal::new().context("failed to create terminal")?;
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     let screen = Terminal::new()?;
     ///     let mut master = Surface::new(' ', Scale { w: 10, h: 10 });
-    ///
-    ///     master.flip(&mut screen.writer()).context("failed to flip surface")?;
+    ///     master.set_terminal(screen);
+    ///     master.flip()?;
     ///
     ///     Ok(())
     /// }
     /// ```
-    pub fn flip(&mut self, terminal: &mut impl Write) -> std::io::Result<()> {
-        write!(terminal, "{}", clear::All)?;
+    pub fn flip(&mut self) -> Result<(), SurfaceError> {
+        let terminal = self
+            .terminal
+            .as_mut()
+            .ok_or(SurfaceError::TerminalMissing)?;
 
+        write!(terminal, "{}", clear::All)?;
         for (i, row) in self.surface.iter().enumerate() {
             write!(terminal, "{}", cursor::Goto(1, (i + 1) as u16))?;
             let line: String = row.iter().collect();

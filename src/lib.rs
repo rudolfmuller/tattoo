@@ -63,39 +63,8 @@ pub struct Border {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::{surface::Surface, terminal::Terminal};
-
     #[test]
-    fn it_works() -> anyhow::Result<()> {
-        // init
-        let mut screen = Terminal::new()?;
-
-        let mut master = Surface::new('.', Scale { w: 30, h: 10 });
-        let mut window = Surface::new(' ', Scale { w: 23, h: 5 });
-        draw::border_layout(
-            &mut window,
-            Border {
-                tl: '╭',
-                tr: '╮',
-                bl: '└',
-                br: '┘',
-                h: '─',
-                v: '│',
-            },
-        );
-        draw::label(&mut window, Position { x: 1, y: 0 }, "Question");
-        draw::label(
-            &mut window,
-            Position { x: 1, y: 1 },
-            "Do you want a tattoo?",
-        );
-
-        master.blit(&window, Position { x: 5, y: 2 });
-        for _ in 0..100 {
-            master.flip(screen.writer())?;
-            std::thread::sleep(std::time::Duration::from_millis(42));
-        }
-        Ok(())
+    fn it_works() {
+        println!("use: 'cargo run --bin demo' ");
     }
 }
