@@ -107,6 +107,12 @@ impl Surface {
         }
     }
 
+    pub fn set_char(&mut self, position: Position, c: char) {
+        if is_valid_range(self, position.x, position.y) {
+            self.surface[position.y][position.x] = c;
+        }
+    }
+
     /// Write surface and clear terminal
     /// Example
     /// ```rust
