@@ -28,7 +28,7 @@ pub fn label(surface: &mut Surface, position: Position, msg: &str) {
     let y = position.y;
     for c in msg.chars() {
         if is_valid_range(surface, x, y) {
-            surface.surface[y][x] = c;
+            set(surface, Position { x, y }, c)
         }
         x += 1;
     }
