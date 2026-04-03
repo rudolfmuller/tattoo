@@ -1,9 +1,6 @@
+use crate::is_valid_range;
 use crate::surface::Surface;
 use crate::{Border, Position};
-
-fn is_valid_range(surface: &mut Surface, x: usize, y: usize) -> bool {
-    y < surface.surface.len() && x < surface.surface[y].len()
-}
 
 /// `label` Write massage on surface
 /// # Example

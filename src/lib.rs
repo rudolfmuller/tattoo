@@ -2,6 +2,10 @@ pub mod draw;
 pub mod surface;
 pub mod terminal;
 
+pub fn is_valid_range(surface: &mut surface::Surface, x: usize, y: usize) -> bool {
+    y < surface.surface.len() && x < surface.surface[y].len()
+}
+
 /// The `Position` is a structure composed of variables of type `usize` named `x` and `y`
 /// # Example
 /// ```

@@ -2,6 +2,14 @@ use crate::{Position, Scale, terminal::Terminal};
 use std::io::{self, Write};
 use termion::{clear, cursor};
 
+/// Checks whether the position is within the surface
+pub fn is_valid_range(surface: &Surface, x: usize, y: usize) -> bool {
+    match surface.surface.get(y) {
+        Some(row) => x < row.len(),
+        None => return false,
+    }
+}
+
 /// Surface error(s)
 #[derive(thiserror::Error, Debug)]
 pub enum SurfaceError {
@@ -72,7 +80,7 @@ impl Surface {
             for (dx, &c) in row.iter().enumerate() {
                 let y = position.y + dy;
                 let x = position.x + dx;
-                if y < self.surface.len() && x < self.surface[y].len() {
+                if is_valid_range(self, position.x, position.y) {
                     self.surface[y][x] = c;
                 }
             }
@@ -82,6 +90,10 @@ impl Surface {
     /// Set terminal to which `.flip()` will render
     pub fn set_terminal(&mut self, terminal: Terminal) {
         self.terminal = Some(terminal);
+    }
+    /// Checks whether the position we want to use is within the surface boundaries
+    pub fn is_in_bounds(&self, position: Position) -> bool {
+        is_valid_range(self, position.x, position.y)
     }
 
     /// Write surface and clear terminal
