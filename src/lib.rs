@@ -1,6 +1,7 @@
 pub mod draw;
 pub mod surface;
 pub mod terminal;
+pub mod transfer;
 
 /// The `Position` is a structure composed of variables of type `usize` named `x` and `y`
 /// # Example
