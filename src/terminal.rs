@@ -38,6 +38,10 @@ impl Write for Terminal {
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
         self.screen.write(buf)
     }
+    fn write_all(&mut self, buf: &[u8]) -> io::Result<()> {
+        self.screen.write_all(buf)
+    }
+
     fn flush(&mut self) -> io::Result<()> {
         self.screen.flush()
     }
