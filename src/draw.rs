@@ -1,4 +1,3 @@
-use crate::is_valid_range;
 use crate::surface::Surface;
 use crate::{Border, Position};
 
@@ -24,18 +23,18 @@ pub fn label(surface: &mut Surface, position: Position, msg: &str) {
     let mut x = position.x;
     let y = position.y;
     for c in msg.chars() {
-        if is_valid_range(surface, x, y) {
-            set(surface, Position { x, y }, c)
-        }
+        set(surface, Position { x, y }, c);
         x += 1;
     }
 }
-/// `set` Write single `char` on surface
+/// A safe way to write a `char` on the surface
+///
+/// Checks whether the position we want to draw at is within the surface bounds
 pub fn set(surface: &mut Surface, position: Position, c: char) {
     let x = position.x;
     let y = position.y;
 
-    if is_valid_range(surface, x, y) {
+    if surface.is_in_bounds(position) {
         surface.surface[y][x] = c;
     }
 }
