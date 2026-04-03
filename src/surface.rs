@@ -26,6 +26,8 @@ pub struct Surface {
     /// The terminal to which .`flip()` will render
     pub terminal: Option<Terminal>,
     /// Scale of surface
+    pub fill: char,
+    /// Scale of surface
     pub scale: Scale,
 }
 impl Surface {
@@ -48,6 +50,7 @@ impl Surface {
     pub fn new(fill: char, scale: Scale) -> Self {
         Self {
             surface: vec![vec![fill; scale.w]; scale.h],
+            fill,
             scale,
             terminal: None,
         }
@@ -94,6 +97,14 @@ impl Surface {
     /// Checks whether the position we want to use is within the surface boundaries
     pub fn is_in_bounds(&self, position: Position) -> bool {
         is_valid_range(self, position.x, position.y)
+    }
+
+    pub fn get_char(&self, from: Position) -> char {
+        if is_valid_range(self, from.x, from.y) {
+            self.surface[from.y][from.x]
+        } else {
+            ' '
+        }
     }
 
     /// Write surface and clear terminal
