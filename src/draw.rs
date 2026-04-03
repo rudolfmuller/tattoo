@@ -23,14 +23,14 @@ pub fn label(surface: &mut Surface, position: Position, msg: &str) {
     let mut x = position.x;
     let y = position.y;
     for c in msg.chars() {
-        set(surface, Position { x, y }, c);
+        draw_char(surface, Position { x, y }, c);
         x += 1;
     }
 }
 /// A safe way to write a `char` on the surface
 ///
 /// Checks whether the position we want to draw at is within the surface bounds
-pub fn set(surface: &mut Surface, position: Position, c: char) {
+pub fn draw_char(surface: &mut Surface, position: Position, c: char) {
     let x = position.x;
     let y = position.y;
 
@@ -75,9 +75,9 @@ pub fn border_layout(surface: &mut Surface, border: Border) {
         return;
     }
 
-    set(surface, Position { x: 0, y: 0 }, border.tl);
-    set(surface, Position { x: width - 1, y: 0 }, border.tr);
-    set(
+    draw_char(surface, Position { x: 0, y: 0 }, border.tl);
+    draw_char(surface, Position { x: width - 1, y: 0 }, border.tr);
+    draw_char(
         surface,
         Position {
             x: 0,
@@ -85,7 +85,7 @@ pub fn border_layout(surface: &mut Surface, border: Border) {
         },
         border.bl,
     );
-    set(
+    draw_char(
         surface,
         Position {
             x: width - 1,
@@ -95,13 +95,13 @@ pub fn border_layout(surface: &mut Surface, border: Border) {
     );
 
     for x in 1..(width - 1) {
-        set(surface, Position { x, y: 0 }, border.h);
-        set(surface, Position { x, y: height - 1 }, border.h);
+        draw_char(surface, Position { x, y: 0 }, border.h);
+        draw_char(surface, Position { x, y: height - 1 }, border.h);
     }
 
     for y in 1..(height - 1) {
-        set(surface, Position { x: 0, y }, border.v);
-        set(surface, Position { x: width - 1, y }, border.v);
+        draw_char(surface, Position { x: 0, y }, border.v);
+        draw_char(surface, Position { x: width - 1, y }, border.v);
     }
 }
 
